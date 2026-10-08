@@ -1,33 +1,85 @@
-# 制作フロー
+# Character production workflow
 
-参照画像から形を生成し、部品を組み立てて動かすまでを工程ごとに確認します。操作が完了したか、形が参照に合うか、動作が自然に見えるかは別々に判定します。
+Move from reference images to generated parts, assembly, and animation in stages. Assess operation completion, reference fidelity, and natural-looking movement separately. The checks below reflect observations from specific experiments, not a performance benchmark for every 3D generation model.
 
-## 参照画像を整理する
+```mermaid
+flowchart TD
+    A[Reference analysis and part definitions] --> B[Base body without clothing]
+    B --> C[Face, hands, and feet]
+    C --> D[Clothing and additional parts]
+    D --> E[Rig, contact, and primary motion]
+    E --> F[Cloth and secondary motion]
+    F --> G[Export and target-engine checks]
+    C -. Geometry or texture mismatch .-> C
+    D -. Body proportions fail .-> B
+    E -. Joint deformation fails .-> B
+    E -. Clothing interference .-> D
+    F -. Primary motion fails .-> E
+    F -. Garment shape fails .-> D
+```
 
-正面・側面・背面の対応を確認し、部位の輪郭と関節位置の候補を抽出します。身体の共通部位、衣装、キャラクター固有の部位を分けます。画像で見える情報と推定した情報を区別し、部品ごとの生成に渡す定義を作ります。
+## 1. Analyze references and define parts
 
-## 衣装なしで素体を確認する
+Use [character-reference-analysis](../skills/character-reference-analysis/SKILL.md).
 
-体型、腕や脚の厚み、Tポーズ、関節位置を確認します。衣装に収めるために人体を極端に細くする方法は使いません。小さな関節曲げで形が崩れる場合は、素体やウェイトを見直します。
+Confirm front, side, and back correspondence. Separate shared anatomy, clothing, and character-specific parts. Use SAM-family tools for image regions and OpenPose or similar tools for candidate joints. Overlay results on source images to check misdetections and left/right labels.
 
-## 顔と手足を整える
+Record dimensions, orientation, symmetry, attachment points, and candidate bone connections for each generation unit. Distinguish observed, estimated, and unknown information. Hidden body thickness, joint axes, and weights need separate 3D checks; segmentation and pose landmarks do not determine them.
 
-目、まぶた、鼻、唇、口内、指、足首などの細部を確認します。テクスチャを表示した状態で、静止形状と瞬き・口開閉・関節曲げを比べます。形状だけを確認した場合は、その範囲を記録します。
+**Proceed when:** every generation target has a reference, an orientation, and visible uncertainty. Resolve contradictory views or limit the prototype scope before generating parts.
 
-## 衣装と追加部品を合わせる
+## 2. Validate the unclothed base body
 
-素体を基準として、衣装、靴、髪、耳、尻尾などを合わせます。接合位置や追従先に加えて、身体との余裕を確認します。干渉を減らす補正でシルエットが悪くなった場合は、衣装の形やウェイトへ戻ります。
+Use [character-base-body](../skills/character-base-body/SKILL.md).
 
-## リグと動作を確認する
+Check proportions, arm and leg thickness, T-pose, and joint placement without clothing. Preserve the body baseline rather than making anatomy excessively thin to fit an outfit. Inspect front, side, and oblique views, then try small joint bends.
 
-関節の局所曲げから、腰下げ、片足上げ、歩行へと動作を広げます。支持する足と遊脚を区別し、接地と滑りを測ります。数値の検査と、正面・側面からの見た目の確認を併用します。
+**Proceed when:** the body matches the intended proportions and the tested bends do not produce major collapse. If anatomy or deformation fails, revisit body shape, pose alignment, or weights before fitting clothing.
 
-## 布と二次動作を試す
+## 3. Refine the face, hands, and feet
 
-主動作を確認してから、衣装や髪、耳、尻尾の揺れを試します。布物理を使う場合は計算面、ピン、衝突、転写を確認します。不安定な計算結果を修正した場合は、生の結果と採用した結果を分けて保存します。
+Use [character-face-hands](../skills/character-face-hands/SKILL.md).
 
-## 記録と引き継ぎ
+Check eyes, eyelids, nose, lips, mouth interior, fingers, and ankle connections within the requested scope. Fine facial and extremity geometry showed more visible failures in the experiments than simple bodies, shoes, or clothing in static views. Select local modeling, retopology, separate generation, or approved existing parts according to the defect; splitting generation does not guarantee improvement.
 
-各工程では入力、変更内容、比較画像、検査結果、未解決箇所を残します。編集用の制御と、焼き込んだ再生用データを区別します。GLBやFBXへ書き出した場合は、再読込して対象の動作が残っていることを確認します。
+Compare static shape, blinking, mouth opening, and requested bends with textures visible. Moving a painted eye or mouth without matching geometry can remain unnatural. Label geometry-only inspection explicitly.
 
-Unity向けに渡す場合は、Blenderで動いたこととは別にアバター設定と動作を検証します。未実施の確認を、互換性があるという説明に置き換えません。
+**Proceed when:** geometry, UVs, textures, and the tested movements agree. Return surface misalignment or unnatural closure to detail refinement before adding more expressions.
+
+## 4. Fit clothing and additional parts
+
+Use [character-clothing-fit](../skills/character-clothing-fit/SKILL.md).
+
+Fit clothing, shoes, hair, and any character-specific ears or tail around the body baseline. Keep parts separately editable. Record attachments, parenting, follow targets, and clearance.
+
+Inspect static silhouettes and small movements separately. Clothing that looks clean at rest can still fold or penetrate during motion. Compare clothing-on/off views in fixed poses. Reducing penetration through a large hem bulge can worsen the silhouette.
+
+**Proceed when:** attachments, clearance, and silhouette are acceptable in the tested poses. Revisit garment shape, topology, or weights if correction requires large bulges; revisit the body if proportions have been compromised.
+
+## 5. Validate the rig and primary motion
+
+Use [character-rig-motion](../skills/character-rig-motion/SKILL.md).
+
+Fit bones to the actual body and rest pose. Progress from local joint bends to pelvis lowering, alternating foot lifts, and walking as requested. Distinguish stance and swing feet; measure sole height, foot sliding, and IK error alongside front/side visual checks.
+
+Natural-looking walking requires more than periodic foot motion. Review weight transfer, pelvis movement, arm swing, and heel/toe roll. A functioning rig or IK system does not by itself establish natural motion.
+
+**Proceed when:** the tested primary motion maintains acceptable body deformation and contact. Return joint failures to body/weight correction and clothing failures to fitting.
+
+## 6. Trial cloth and secondary motion
+
+Use [character-cloth-secondary-motion](../skills/character-cloth-secondary-motion/SKILL.md).
+
+After validating primary motion, trial sway for clothing, hair, ears, and tails. Choose helper bones, corrective shapes, or physics for the intended use. For cloth simulation, inspect proxy geometry, pins, collisions, modifier order, and successful motion-transfer binding.
+
+Preserve raw results separately from adopted corrections. In the experiments, a cloth proxy rolled up at the hem and the intended transfer setup failed. Attenuation and amplitude limits produced a playback prototype; they did not establish successful natural cloth physics. Do not reuse trial parameters as universal settings.
+
+**Proceed when:** the adopted result is stable within the tested scope, preserves the silhouette, and reproduces after reopening. State whether it is authored motion, live physics, or corrected baked playback. Revisit garment fitting or primary motion when their failures are driving secondary-motion problems.
+
+## 7. Record and hand off
+
+At each stage, save inputs, edits, comparison images, inspection results, and unresolved issues. State tested poses, frame ranges, and inspection directions. A single-direction coverage check does not establish collision behavior in all directions.
+
+Keep editable controls separate from baked playback data. After GLB or FBX export, reimport and check the required movements. Record file size, memory, and reuse limits when baking dense per-frame morphs.
+
+For Unity delivery, verify avatar setup, bone mapping, rest pose, and motion separately from Blender playback. Generic/Humanoid compatibility remains unverified until tested in the target engine. Mark unperformed checks as untested.

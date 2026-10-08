@@ -67,7 +67,7 @@ Use $character-base-body to check this body's proportions and T-pose.
 Save unclothed front/side views and comparisons of small joint bends.
 ```
 
-You do not need to execute every stage at once. Return to the stage responsible for a visual or deformation problem. The [production workflow](docs/workflow.md) describes stage relationships, and [lessons from experiments](docs/lessons.md) records observations behind the skills. These supporting documents are currently in Japanese.
+You do not need to execute every stage at once. Return to the stage responsible for a visual or deformation problem. The [production workflow](docs/workflow.md) describes the stages, their completion checks, and when to revisit earlier work.
 
 ## Scope and validation
 
@@ -75,7 +75,7 @@ The skills are not limited to a particular character or 3D generation model. Ear
 
 This repository contains skills and documentation. It does not include generation implementations, model weights, character images, 3D assets, or experiment caches. Supply the tools needed by your chosen stages separately.
 
-Skill structure and CLI discovery/installation are checked; see the [installation validation record](docs/installation-validation.md) for coverage. The complete workflow has not yet been rerun on a new character, and Unity Generic/Humanoid behavior remains untested.
+Skill structure, CLI discovery, installation, and repeat installation have been checked in an isolated environment. Claude Code plugin manifests passed validation; runtime plugin invocation remains untested. The complete workflow has not yet been rerun on a new character, and Unity Generic/Humanoid behavior remains untested.
 
 ## License
 
