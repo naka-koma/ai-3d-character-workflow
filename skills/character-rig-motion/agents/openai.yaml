@@ -1,0 +1,3 @@
+interface:
+  display_name: "キャラのリグと動作検証"
+  short_description: "素体に骨格とウェイトを合わせ足IK・接地・歩行を段階的に検証する"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "布と部品の二次動作"
+  short_description: "衣装や髪・耳・尻尾の揺れを試し物理の安定性と保存後の再生を検証する"

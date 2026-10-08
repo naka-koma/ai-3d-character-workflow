@@ -1,0 +1,3 @@
+interface:
+  display_name: "キャラ素体の形合わせ"
+  short_description: "衣装なしの素体で体型・基準姿勢・関節位置と厚みを確認する"

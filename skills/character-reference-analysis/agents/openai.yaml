@@ -1,0 +1,3 @@
+interface:
+  display_name: "キャラ参照画像の分析"
+  short_description: "キャラクターの三面図から部品・輪郭・関節位置の候補を整理する"
