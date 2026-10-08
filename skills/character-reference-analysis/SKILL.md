@@ -1,27 +1,27 @@
 ---
 name: character-reference-analysis
-description: キャラクターの参照画像・三面図から、生成部品、輪郭、関節候補、寸法、接合位置を整理する。SAMやOpenPoseの出力を制作向けの部品定義へまとめる工程で使う。
+description: Analyze character references and front, side, and back views to define generation parts, silhouettes, candidate joints, dimensions, and attachment points. Use when turning SAM masks or OpenPose landmarks into production part definitions.
 ---
 
-# 参照画像から部品と位置を定義する
+# Define parts and placement from references
 
-目的は生成と組み立てに渡す部品定義。2D推定を完成した3D構造として扱わない。
+Produce part definitions for generation and assembly. Do not treat 2D estimates as a finished 3D structure.
 
-## 入力と分析
+## Inputs and analysis
 
-- 使用する画像、正面・側面・背面の対応、キャラの共通特徴と衣装を確認する。別のデザインや衣装を混ぜない。見えない箇所は推定として残す。
-- SAM系は領域の抽出、OpenPose等は画像上の関節候補に使う。実際に利用可能なツール・モデルを確認し、未実行の抽出を実行済みと書かない。
-- 元画像へマスク・点・ラベルを重ねて目視確認する。左右のラベルはキャラ基準と画像基準を明示。狐耳と人間の耳、尻尾と髪を区別する。衣装で隠れた人体や、アニメ絵の誤検出を自動的に確定しない。
-- 三面図は自動的に同一形状とはみなさない。基準の高さ・中心線をそろえ、矛盾する輪郭や関節位置を記録する。2D寸法には画素と正規化値、3D寸法には座標系と単位の根拠を添える。
+- Confirm source images, front/side/back correspondence, shared character features, and outfit. Do not mix different designs or outfits. Mark unseen regions as estimates.
+- Use SAM-family tools for regions and OpenPose or similar tools for candidate image-space joints. Check available tools and models; do not report extraction as executed when it was not.
+- Overlay masks, landmarks, and labels on source images for visual review. State whether left/right labels use character or image coordinates. Distinguish animal ears from human ears and tails from hair. Do not automatically confirm anatomy hidden by clothing or detections that misread stylized artwork.
+- Do not assume three views describe an identical shape. Align reference height and centerlines, and record conflicting silhouettes or joint locations. Record pixels and normalized values for 2D measurements; justify coordinate systems and units for 3D dimensions.
 
-## 部品定義の出力
+## Part definition output
 
-各部品を機械可読なJSONと画像で記録する。項目は part_id、共通人体／キャラ固有／衣装の区分、参照画像と可視領域、左右・対称性、寸法候補、向き、接合位置、接続するボーン候補、生成単位、根拠、未確定事項。
+Record each part in machine-readable JSON with linked images. Include `part_id`, category (shared anatomy / character-specific / clothing), reference images and visible regions, side and symmetry, candidate dimensions, orientation, attachment location, candidate target bones, generation unit, evidence, and unresolved details.
 
-輪郭・関節位置・接合点は、それぞれ observed / estimated / unknown を区別する。ボーンへの割り当ては候補であり、Humanoidの互換性を意味しない。画像やマスクを記録へリンクし、後工程が同じ入力を再利用できるようにする。
+Mark silhouettes, joints, and attachment points individually as `observed`, `estimated`, or `unknown`. Bone assignments are candidates and do not establish Humanoid compatibility. Link images and masks so later stages can reuse the same inputs.
 
-## 完了と戻し先
+## Completion and return path
 
-全ての生成対象が参照と結び付いており、左右・向き・不足する視点が確認可能なら定義工程を完了とする。不鮮明な部位は範囲を限定して試作するか、必要な追加参照を明示する。輪郭の矛盾を3D側の極端な変形で吸収しない。
+Complete this stage when every generation target is linked to references and its side, orientation, and missing views can be reviewed. For unclear parts, limit the prototype scope or specify additional references needed. Do not absorb contradictory silhouettes through extreme 3D deformation.
 
-人体の厚みや可動性の確認は、利用可能なら $character-base-body へ引き継ぐ。
+Hand off body thickness and deformation checks to $character-base-body when available.

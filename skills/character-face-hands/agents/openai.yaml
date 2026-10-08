@@ -1,3 +1,3 @@
 interface:
-  display_name: "顔・手足の造形と変形"
-  short_description: "顔と手足の細部を整えテクスチャ込みで開閉や関節変形を確認する"
+  display_name: "Character Face and Hands"
+  short_description: "Validate detailed geometry, textures, and facial motion"

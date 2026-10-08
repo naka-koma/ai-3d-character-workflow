@@ -1,0 +1,9 @@
+{
+  "name": "ai-3d-character-workflow",
+  "description": "Six production skills for reference analysis, body refinement, face and hands, clothing fitting, rigging, and secondary motion.",
+  "version": "0.1.0",
+  "author": { "name": "naka-koma" },
+  "homepage": "https://github.com/naka-koma/ai-3d-character-workflow",
+  "repository": "https://github.com/naka-koma/ai-3d-character-workflow",
+  "license": "MIT"
+}

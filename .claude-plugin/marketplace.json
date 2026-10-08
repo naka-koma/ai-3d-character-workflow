@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ai-3d-character-workflow",
+  "description": "AI 3D character production skills",
+  "owner": { "name": "naka-koma" },
+  "plugins": [
+    {
+      "name": "ai-3d-character-workflow",
+      "description": "Reference analysis, body and detail refinement, clothing, rigging, and secondary motion.",
+      "version": "0.1.0",
+      "author": { "name": "naka-koma" },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/naka-koma/ai-3d-character-workflow",
+      "repository": "https://github.com/naka-koma/ai-3d-character-workflow",
+      "license": "MIT"
+    }
+  ]
+}

@@ -1,28 +1,28 @@
 ---
 name: character-face-hands
-description: キャラクターの顔・目・まぶた・口・手足などの細部を整え、テクスチャを含めて瞬き、口開閉、指や足の変形を確認する工程で使う。
+description: Refine character faces, eyes, eyelids, mouths, hands, and feet. Use when validating detailed geometry and textured blinking, mouth opening, or finger and foot deformation.
 ---
 
-# 細部の造形・表面・動きをそろえる
+# Align detailed geometry, surfaces, and movement
 
-顔や手足は「動かせた」だけで完了としない。参照に沿う静止形状と、表面の見え方を維持した変形を確認する。
+Movement alone does not complete faces or extremities. Check reference-aligned static shape and deformation that preserves intended surface appearance.
 
-## 入力と作業の選択
+## Inputs and method selection
 
-- 対象部位、参照の表情、使用するテクスチャとUV、必要な動作を確認する。顔・手・足を依頼されていない範囲まで一度に作り直さない。
-- 生成結果の小さな凹凸が目・鼻・唇・指として成立しているかを見分ける。細かな部品への分割生成、局所造形、リトポロジー、ユーザーが許可した既存部品から適した方法を選ぶ。分割すれば必ず品質が上がるとは仮定しない。
-- 瞬きは眼球とまぶたの境界、閉じた状態の輪郭を整える。眼球への食い込み、透け、テクスチャの目が残る状態を確認する。
-- 口は必要な開き方に応じて上下の唇、口の縁、口内の奥行きを用意する。歯や舌は必要な表現範囲で扱う。表面を引き伸ばした穴や、顔に描かれた口の移動だけで開口が完成したと判断しない。
-- 手は指の分離、付け根と関節、掌の厚みを、足は足首と足の接続を確認する。見えない指や靴内の足を根拠なく確定しない。
+- Confirm requested regions, reference expressions, textures and UVs, and required movements. Do not rebuild unrequested face, hand, or foot regions as part of the same task.
+- Distinguish generated surface noise from usable eyes, noses, lips, or fingers. Choose among separate part generation, local modeling, retopology, and existing parts approved by the user. Do not assume splitting generation always improves quality.
+- For blinking, establish eyeball/eyelid boundaries and the closed-eye silhouette. Check penetration into the eyeball, see-through surfaces, and painted eyes that remain visible when closed.
+- For mouth opening, provide upper/lower lips, the mouth rim, and interior depth appropriate to the required motion. Include teeth and tongue only as needed. A stretched surface hole or movement of a painted mouth does not establish a working mouth.
+- For hands, check separated fingers, their bases and joints, and palm thickness. For feet, check the ankle connection. Do not assert unseen fingers or anatomy inside shoes without evidence.
 
-## 変形とテクスチャの検証
+## Deformation and texture validation
 
-Blenderでは元のメッシュ、UV、マテリアル、形状キーを調べてから局所変更し、新版を保存する。シェーダーノードは型で探し、現在のAPIを確認する。
+Inspect original mesh, UVs, materials, and shape keys in Blender before local edits, and save a new version. Find shader nodes by type and check the current API.
 
-ニュートラル・途中・最大の動きを、テクスチャありと形状確認用の表示で比較する。片目と両目の瞬き、閉口と開口、依頼された指・足の曲げを適切な角度で撮る。UVの伸び、絵の目や口との位置ずれ、閉じたときの隙間を記録する。
+Compare neutral, intermediate, and maximum motion with textures and geometry inspection shading. Capture unilateral and bilateral blinks, closed/open mouth, and requested finger or foot bends from useful angles. Record UV stretching, misalignment with painted eyes or mouths, and gaps in closed states.
 
-灰色表示だけの検証なら「形状のみ」と明記する。表面と境界のずれがある場合は、動きを増やす前に造形・UV・テクスチャ合わせへ戻す。
+Label clay-only checks as `geometry only`. If surface appearance and geometric boundaries disagree, return to geometry, UVs, and texture alignment before adding more movements.
 
-## 成果物
+## Deliverables
 
-対象部位の編集データ、表情または動作の比較画像、変更した形状キー・ボーン・UV、使用した生成入力と残る問題を保存する。最終形式へ渡す場合は再読込して同じ表情を確認する。瞬き・口開閉が自然に見える範囲と未検証範囲を区別する。
+Save editable parts, expression or motion comparisons, changed shape keys/bones/UVs, generation inputs, and remaining problems. When delivering an export, reimport it and check the same expressions. Distinguish the range where blinking and mouth opening look natural from untested ranges.

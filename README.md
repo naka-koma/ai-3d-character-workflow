@@ -1,41 +1,82 @@
 # AI 3D Character Workflow
 
-AIで生成したキャラクターの部品を、編集やアニメーションに使える3Dモデルへ整えるためのスキル集です。参照画像の分析から素体、顔、衣装、リグ、布の揺れまでを6つの工程に分けています。
+English | [日本語](README.ja.md)
 
-画像からの3D生成とBlender MCPによる組み立てを試したところ、一連の操作はできました。一方で、顔や手足の細部、関節の変形、衣装の動きには問題が残りました。このリポジトリでは、作業手順に加えて、各工程の完了条件と見直す条件を記録しています。
+Six agent skills for turning AI-generated character parts into editable, animated 3D models. The workflow separates reference analysis, body refinement, facial and extremity details, clothing fitting, rigging, and secondary motion.
 
-## スキル
+Experiments with image-to-3D generation and Blender MCP demonstrated that the operations can be performed in sequence. Fine facial and hand geometry, joint deformation, and garment motion still had problems. These skills record both procedures and the conditions for completing or revisiting each stage.
 
-| 工程 | スキル | 主な確認事項 |
+## Skills
+
+| Stage | Skill | Main checks |
 |---|---|---|
-| 参照画像・三面図 | [character-reference-analysis](skills/character-reference-analysis/SKILL.md) | 部位の輪郭、関節候補、左右、寸法と接合位置 |
-| 素体 | [character-base-body](skills/character-base-body/SKILL.md) | 体型、厚み、Tポーズ、関節位置 |
-| 顔・手足 | [character-face-hands](skills/character-face-hands/SKILL.md) | 細部の造形、テクスチャ、開閉や曲げ |
-| 衣装・追加部品 | [character-clothing-fit](skills/character-clothing-fit/SKILL.md) | 素体を保った組み立て、接合と余裕 |
-| リグ・動作 | [character-rig-motion](skills/character-rig-motion/SKILL.md) | ウェイト、足IK、接地、歩行 |
-| 布・二次動作 | [character-cloth-secondary-motion](skills/character-cloth-secondary-motion/SKILL.md) | 揺れ、干渉、保存後の再生 |
+| References and three views | [character-reference-analysis](skills/character-reference-analysis/SKILL.md) | Silhouettes, candidate joints, sides, dimensions, attachments |
+| Base body | [character-base-body](skills/character-base-body/SKILL.md) | Proportions, thickness, T-pose, joint placement |
+| Face, hands, and feet | [character-face-hands](skills/character-face-hands/SKILL.md) | Detailed geometry, textures, blinking, mouth opening, bends |
+| Clothing and additional parts | [character-clothing-fit](skills/character-clothing-fit/SKILL.md) | Assembly that preserves anatomy, attachments, clearance |
+| Rig and motion | [character-rig-motion](skills/character-rig-motion/SKILL.md) | Weights, foot IK, ground contact, walking |
+| Cloth and secondary motion | [character-cloth-secondary-motion](skills/character-cloth-secondary-motion/SKILL.md) | Sway, interference, saved playback |
 
-## 使い方
+## Installation
 
-必要な工程のスキルを選び、そのフォルダを利用するエージェントのスキル配置先へコピーします。既に同名のスキルがある場合は、差分を確認してから更新してください。スキルを登録せず、各`SKILL.md`を制作手順として読むこともできます。
+With Node.js and Git available, install using the [skills CLI](https://github.com/vercel-labs/skills). Skill instructions and UI metadata are in English.
 
-名前で指定する場合の例です。
-
-```text
-$character-base-body を使って、この素体の体型とTポーズを確認してください。
-衣装なしの正面・側面と、小さな関節曲げの比較を残してください。
+```sh
+npx skills add naka-koma/ai-3d-character-workflow
 ```
 
-全工程を一度に進める必要はありません。見た目や変形に問題があれば、その問題を直す工程へ戻ります。[制作フロー](docs/workflow.md)に工程間の関係を、[実験で分かったこと](docs/lessons.md)にスキルの元となった観察をまとめています。
+Follow the prompts to select your agent, skills, and installation scope. To install all six skills globally for Codex:
 
-## 対象と検証範囲
+```sh
+npx skills add naka-koma/ai-3d-character-workflow --global --agent codex --skill '*' --yes
+```
 
-特定のキャラクターや3D生成モデルには限定していません。耳や尻尾は追加部位として扱います。SAMやOpenPoseは輪郭・関節位置の推定を補助しますが、それだけで3Dの骨格や自然な変形が完成するとは扱いません。
+For a single stage, replace `--skill '*'` with `--skill character-base-body`, for example. For a project installation, run from that project's directory and omit `--global`.
 
-このリポジトリに含まれるのはスキルと文書です。3D生成モデルの実装、学習済みの重み、キャラクター画像、3Dモデル、実験用のキャッシュは含まれていません。生成や編集を実行するには、選んだ工程に対応するツールを別途用意してください。
+To list skills without installing:
 
-スキルのファイル構成は検査済みです。新しいキャラクターで全工程を再実行した検証や、UnityでのGeneric・Humanoidの動作確認はまだ行っていません。
+```sh
+npx skills add naka-koma/ai-3d-character-workflow --list
+```
 
-## ライセンス
+### Updates
 
-[MIT License](LICENSE)。このライセンスは本リポジトリのスキルと文書に適用します。制作時に利用する外部モデル、ツール、参照画像、アセットには、それぞれのライセンスを確認してください。
+Rerun the same installation command to update the selected skills. If skills with the same names already exist, or you have edited installed copies, review differences and keep a backup before updating.
+
+### Claude Code plugin
+
+As with yomiyasu, a marketplace entry provides all six skills as one plugin. Run these commands inside Claude Code:
+
+```text
+/plugin marketplace add naka-koma/ai-3d-character-workflow
+/plugin install ai-3d-character-workflow@ai-3d-character-workflow
+```
+
+Invoke a skill with a name such as `/ai-3d-character-workflow:character-base-body`. See [Claude Code plugin management](https://code.claude.com/docs/en/discover-plugins) for updates.
+
+### Manual installation
+
+You can also copy the required `skills/<skill-name>/` folders into your agent's skill directory, or read each `SKILL.md` as a production guide without installing it.
+
+## Usage
+
+For example, ask Codex:
+
+```text
+Use $character-base-body to check this body's proportions and T-pose.
+Save unclothed front/side views and comparisons of small joint bends.
+```
+
+You do not need to execute every stage at once. Return to the stage responsible for a visual or deformation problem. The [production workflow](docs/workflow.md) describes stage relationships, and [lessons from experiments](docs/lessons.md) records observations behind the skills. These supporting documents are currently in Japanese.
+
+## Scope and validation
+
+The skills are not limited to a particular character or 3D generation model. Ears and tails are additional parts. SAM and OpenPose assist with region and joint estimation; their output alone does not establish a 3D skeleton or natural deformation.
+
+This repository contains skills and documentation. It does not include generation implementations, model weights, character images, 3D assets, or experiment caches. Supply the tools needed by your chosen stages separately.
+
+Skill structure and CLI discovery/installation are checked; see the [installation validation record](docs/installation-validation.md) for coverage. The complete workflow has not yet been rerun on a new character, and Unity Generic/Humanoid behavior remains untested.
+
+## License
+
+[MIT License](LICENSE) applies to the skills and documentation in this repository. Check the separate licenses of external models, tools, references, and assets used in production.

@@ -1,29 +1,29 @@
 ---
 name: character-rig-motion
-description: キャラクターの基準姿勢にリグとウェイトを合わせ、関節テスト、足IK、接地、歩行を段階的に検証する。GenericやHumanoid向けの引き継ぎを準備する工程で使う。
+description: Fit rigs and skin weights to a character's reference pose, then progressively validate joint bends, foot IK, ground contact, and walking. Use when preparing motion and handoff for Generic or Humanoid workflows.
 ---
 
-# 素体に合った骨格と動作を検証する
+# Validate a skeleton and motion fitted to the body
 
-## リグの前提
+## Rig prerequisites
 
-参照画像、確認済みの素体、基準姿勢、身体と衣装の分離状態、対象エンジン、必要な動きを確認する。Blenderの接続・シーン・APIを確認し、旧版と既存アクションを残す。
+Confirm references, the validated body, rest pose, body/clothing separation, target engine, and required movements. Inspect the Blender connection, scene, and API; preserve previous versions and existing actions.
 
-骨は固定寸法のテンプレートを押し込むのではなく、実際の肩・肘・手首・股関節・膝・足首へ合わせる。画像の関節候補は補助に使い、3Dの軸・骨のロール・左右・奥行きを確認する。Tポーズで腕の水平だけを検査しない。
+Fit bones to actual shoulders, elbows, wrists, hips, knees, and ankles rather than forcing a fixed-size template onto the mesh. Use image landmarks as aids and check 3D axes, bone roll, side labels, and depth. Do not check a T-pose solely by whether arms are horizontal.
 
-## 段階的な試験
+## Progressive tests
 
-- ニュートラル、肩・肘・膝・足首の局所曲げで、ウェイトの体積保持と連続性を確認する。最大影響数や正規化は対象エンジンに合わせる。
-- 足IKは足の位置と向き、膝ポール、伸縮の有無を定義する。直線の脚で解が出ない場合は初期曲げやレスト姿勢を検討し、実際の評価後の骨とメッシュで確かめる。初期値・ポール角は現物に合わせ、他のリグへ試験値をそのまま流用しない。
-- 腰下げ→左右の足上げ→歩行の順など、依頼に合う小さな試験で範囲を広げる。支持する足と遊脚を区別し、支持相ではワールド位置の滑り、靴底の高さ、足IK誤差を測る。足の移動量と素体の高さから単位の意味を明示する。
-- 自然な歩行では支持相、遊脚、骨盤、腰の上下、左右の重心移動、腕振り、踵・つま先の足ロールを検討する。単純な周期関数で動かした試作を自然さの完成と呼ばない。参照モーションを使ったかも記録する。
+- Check neutral pose and local shoulder, elbow, knee, and ankle bends for volume preservation and weight continuity. Match maximum bone influences and normalization to the target engine.
+- Define foot IK position/orientation, knee poles, and stretch behavior. If straight legs prevent a stable solution, consider an initial bend or rest-pose adjustment and inspect evaluated bones and meshes. Calibrate initial values and pole angles to this rig; do not copy trial values unchanged to other rigs.
+- Expand the range through small tests appropriate to the request, such as pelvis lowering, alternating foot lifts, then walking. Distinguish stance and swing feet. During stance, measure world-space sliding, sole height, and foot IK error. Explain units in relation to foot travel and body height.
+- For natural walking, consider stance/swing phases, pelvis movement, vertical bob, lateral weight transfer, arm swing, and heel/toe roll. Do not call a prototype driven by simple periodic functions a completed natural walk. Record whether reference motion was used.
 
-## 判定と戻し先
+## Assessment and return paths
 
-接地の数値と前・側面の見た目を両方確認する。衣装を非表示にした検査も行い、素体の破綻と衣装の干渉を分ける。腕が細すぎる、関節が潰れる場合は素体・ウェイトへ、裾が大きく膨らむ場合は衣装合わせへ戻る。
+Check both contact measurements and front/side appearance. Inspect with clothing hidden to separate body deformation from clothing interference. Return excessively thin arms or collapsed joints to body/weight correction; return large hem bulges to clothing fitting.
 
-## 保存とエンジンへの引き継ぎ
+## Saving and engine handoff
 
-編集用リグ、動作クリップ、比較画像、接地検証、未解決問題を保存する。GLB/FBXへ出力する場合はIK等の制約が必要な形で焼き込まれたかを再読込で確認する。再生用アニメーションと編集用の制御を区別する。
+Save the editable rig, motion clips, comparison images, contact measurements, and unresolved issues. For GLB/FBX exports, reimport and verify that IK and other constraints were baked in the required form. Distinguish playback animation from editable controls.
 
-ボーン名や本数だけでGeneric/Humanoid対応を保証しない。Unityで試す依頼なら実際のアバター設定・骨のマッピング・基準姿勢・動作を検証する。未実施ならその状態を残す。
+Bone names or counts alone do not guarantee Generic/Humanoid support. If Unity validation is requested, actually test avatar setup, bone mapping, rest pose, and motion. Record these as untested when not performed.

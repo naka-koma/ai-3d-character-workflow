@@ -1,33 +1,33 @@
 ---
 name: character-cloth-secondary-motion
-description: キャラクターの衣装・髪・耳・尻尾の揺れを、補助ボーン、補正シェイプ、布シミュレーションで試し、安定性、干渉、書き出し後の再生を検証する工程で使う。
+description: Trial secondary motion for character clothing, hair, ears, and tails using helper bones, corrective shapes, or cloth simulation. Use when checking stability, interference, saved playback, and export limitations.
 ---
 
-# 二次動作を試し、採用範囲を明示する
+# Trial secondary motion and state its usable scope
 
-## 手段の選択
+## Method selection
 
-基準となる身体と衣装、検証した主動作、参照、最終用途を確認する。主動作で既に大きく貫通する衣装を、揺れだけで修復しようとしない。
+Confirm baseline body/clothing, validated primary motion, references, and final use. Do not try to repair major penetration already present in primary motion through secondary movement alone.
 
-補助ボーン、姿勢に対応する補正シェイプ、物理シミュレーションから用途に合う方法を選ぶ。ユーザーが物理を試す意図なら実際に計算し、計算できなかった場合や手付けへ切り替えた場合は区別する。耳・尻尾を衣装と同じ物理設定で扱う必要はない。
+Choose helper bones, pose-dependent corrective shapes, or physics to suit the purpose. When the user intends a physics trial, actually simulate it and distinguish failed computation or a switch to authored motion. Ears and tails need not use the same physics settings as clothing.
 
-## 布物理の試験
+## Cloth physics trials
 
-- BlenderのAPI・シーン・モディファイア順を読み、計算前の版を保存する。高密度生成メッシュの場合は低密度の計算面と動きの転写を検討する。
-- 計算面の厚み、面の品質、身体との初期交差、ピン領域、重力・剛性・質量・減衰・衝突距離を定義する。自己衝突を使うかも明示する。数値は単位と形状に合わせ、過去の値を普遍的な設定にしない。
-- 小さな主動作から順に評価し、揺れ幅、裾の高さ、巻き上がり、身体への接触、数値の発散を見る。転写バインドは実際に成立したことを検査する。
-- 転写では、身体追従と物理の変形が二重にかからないようにする。服の形が崩れたら、初期交差・ピン・計算面・剛性を切り分ける。設定変更の影響が分かる固定入力と動作を使う。
+- Inspect the Blender API, scene, and modifier order; save a pre-simulation version. For dense generated meshes, consider a low-resolution simulation proxy and motion transfer.
+- Define proxy thickness, mesh quality, initial body intersections, pin regions, gravity, stiffness, mass, damping, and collision distances. State whether self-collision is used. Match values to units and geometry; do not treat past settings as universal.
+- Evaluate progressively from small primary motions, checking sway amplitude, hem height, rolling, body contact, and numerical divergence. Verify that transfer binding actually succeeded.
+- Avoid applying body-follow deformation and physical deformation twice during transfer. If clothing collapses, isolate initial intersections, pinning, proxy geometry, and stiffness. Hold inputs and motion fixed when comparing settings.
 
-## 不安定な結果の扱い
+## Unstable results
 
-生の結果を残す。揺れを弱める、平滑化する、振幅を制限する補正は試作の選択肢であり、物理が成立した証明ではない。修正した結果は元ソルバーの衝突保証を引き継がない。
+Preserve raw results. Attenuation, smoothing, and amplitude limits are prototype options, not proof of successful physics. Corrected results do not inherit any collision guarantees of the original solver.
 
-同じ不安定さが続いた場合は、効果のない設定変更を重ねず、原因を記録して安定した版へ戻す。未完成の物理結果を隠して「自然な布」と報告しない。
+When the same instability repeats, stop ineffective parameter changes, record the cause, and return to a stable version. Do not hide unfinished physics behind a claim of natural cloth motion.
 
-## 保存・検証
+## Saving and validation
 
-同じ姿勢で二次動作あり／なしを比較し、シルエットと接触を確認する。前方レイの被覆検査だけでは全方向の交差を証明できない。検査方向・姿勢・フレーム数を明記する。
+Compare identical poses with and without secondary motion for silhouette and contact. A forward-ray coverage check cannot establish intersection behavior in every direction. State inspection directions, poses, and frame counts.
 
-物理の設定、生のキャッシュ、採用結果、補正方法、画像、再計算／再生の手順を保存する。保存ファイルの再読込でも揺れが再現することを確認する。ライブな物理と動作専用の焼き込みを区別する。
+Save physics settings, raw caches, adopted results, correction methods, images, and recomputation/playback instructions. Reopen the saved file and verify reproducible motion. Distinguish live physics from animation-specific baking.
 
-形状キー等で焼き込む場合はファイルサイズ、メモリ、法線、他の動作への再利用性も記録する。高密度の全フレームモーフは検証用の手段で、軽いゲーム用の完成構造とは限らない。Unityで未検証なら実時間での互換性を保証しない。
+For shape-key or similar baking, record file size, memory, normals, and reuse with other motions. Dense per-frame morphs may serve validation without being a lightweight game-ready structure. Do not guarantee runtime compatibility when Unity has not been tested.

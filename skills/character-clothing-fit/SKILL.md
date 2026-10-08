@@ -1,27 +1,27 @@
 ---
 name: character-clothing-fit
-description: 基準素体へ衣装・靴・髪・耳・尻尾などの生成部品を組み立て、接合、位置、余裕、静止シルエットと小さな動作での干渉を確認する工程で使う。
+description: Assemble generated clothing, shoes, hair, ears, tails, and other parts around a validated base body. Use when checking attachments, placement, clearance, static silhouettes, and interference during small movements.
 ---
 
-# 身体を保って衣装と追加部品を合わせる
+# Fit clothing and additional parts while preserving the body
 
-## 基準と組み立て
+## Baseline and assembly
 
-- 確認した素体、部品定義、生成部品、参照画像を入力として使う。身体を基準とし、衣装や部品の位置・向き・寸法・内部の余裕を調整する。人体の厚みを潰して衣装へ押し込む方法を常用しない。
-- 身体・衣装・靴を別の編集単位として扱う。髪・耳・尻尾はキャラ固有の部位として定義し、共通Humanoid骨格との接続先を記録する。耳や尻尾が全キャラにあるとは仮定しない。
-- Blenderへ取り込む前後で原点、座標系、実寸の根拠、境界、マテリアルを確認する。変更前の版と元アセットを残す。左右の部品は対称生成と個別生成のどちらかを定義に沿って選ぶ。
-- 衣装の厚みと身体との余裕を、正面・側面・背面で確認する。接合点を隠すだけでなく、親子関係と必要な追従先を明示する。顔の造形・表情・UVを、別部品の合わせ込みのために無断で変えない。
+- Use a checked body, part definitions, generated parts, and reference images as inputs. Adjust clothing and part positions, orientation, dimensions, and internal clearance around the body baseline. Do not routinely collapse anatomical thickness to force the body inside clothing.
+- Keep body, clothing, and shoes separately editable. Define hair, ears, and tails as character-specific parts and record their attachment to the shared Humanoid skeleton. Do not assume every character has animal ears or a tail.
+- Before and after importing into Blender, check origins, coordinate systems, the basis for real-world scale, bounds, and materials. Preserve previous versions and source assets. Follow part definitions when choosing mirrored or separately generated left/right parts.
+- Check garment thickness and body clearance from front, side, and back. Specify parenting and required follow targets rather than merely hiding seams. Do not change facial geometry, expressions, or UVs without authorization to accommodate another part.
 
-## 小さな動作で確かめる
+## Small-motion checks
 
-依頼された範囲で腕下げ、肘曲げ、腰下げ、片足上げ等の代表姿勢を固定し、衣装あり／なしで撮る。静止形状の見た目と動作時の干渉を別々に記録する。
+Within the requested scope, freeze representative poses such as lowered arms, bent elbows, a lowered pelvis, or a lifted foot. Capture clothing-on/off comparisons. Record static appearance separately from motion interference.
 
-補助ボーンや補正シェイプは有効な手段だが、適用する姿勢と範囲を定義する。膝の貫通を消すために裾を大きく膨らませた場合は、シルエットの悪化も結果に含める。貫通が減ったことだけで修正成功にしない。
+Helper bones and corrective shapes can be useful, but define poses and ranges where they apply. If removing knee penetration requires inflating the hem substantially, include silhouette degradation in the result. Reduced penetration alone does not establish a successful correction.
 
-大きな膨らみや折れが必要になったら、衣装の元の形、内部の余裕、メッシュ、ウェイトを見直す。素体をさらに細くする方向へ戻さない。
+If fitting requires large bulges or folds, review the original garment shape, clearance, topology, and weights. Do not respond by thinning the body further.
 
-## 出力
+## Outputs and completion scope
 
-組み立てた編集データ、参照と部品の対応、接合位置・親子関係、固定姿勢の比較画像、干渉とシルエットの判定を保存する。
+Save editable assembly data, reference-to-part mappings, attachment locations and parenting, fixed-pose comparison images, and interference/silhouette findings.
 
-試作としての完了範囲を「静止合わせ」「小さな動作」「布の二次動作」で分ける。物理的な揺れを試す依頼では、利用可能なら $character-cloth-secondary-motion を使う。
+Separate prototype completion into `static fitting`, `small-motion checks`, and `secondary cloth motion`. For requested physical motion trials, use $character-cloth-secondary-motion when available.

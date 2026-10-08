@@ -1,28 +1,28 @@
 ---
 name: character-base-body
-description: 生成したキャラクター素体を、参照の体型・Tポーズ・関節位置に合わせ、衣装なしで人体の比率と基本的な変形を確認する工程で使う。
+description: Align a generated character base body with reference proportions, T-pose, and joint locations. Use when checking anatomy, thickness, and basic deformation without clothing before fitting generated parts.
 ---
 
-# 素体の比率と可動する形を整える
+# Establish body proportions and deformable anatomy
 
-人体の形を衣装の内側へ無理に押し込まない。まず衣装なしの素体を基準にする。
+Use the unclothed body as the baseline. Do not force anatomy inside an outfit.
 
-## 作業
+## Work
 
-- 使用する素体、参照、生成モデルの来歴、姿勢、単位と前・上・左右の軸を確認する。既存素体や外部アセットを使う場合はユーザーの選択を尊重する。特定キャラでの「外部素体を使わない」希望を全案件の禁止にしない。
-- Blenderを操作する前に接続とシーンを読み、新版として保存する。既存作業を残し、現在のBlender APIと列挙値を確認してから変更する。
-- 正面・側面・斜めで、頭身、肩幅、胴の厚み、骨盤、上腕・前腕・大腿・下腿の長さと断面を確認する。衣装で隠れる部分にも人体の厚みを残す。
-- Tポーズへ合わせる際は、腕の水平だけでなく肩・肘・手首、股関節・膝・足首の位置を確認する。OpenPose由来の点は位置の手がかりで、奥行きや関節軸の確定値ではない。
-- 表面の平滑化、接合修正、リトポロジーは目的の可動部へ絞る。メッシュが閉じているか、人体として自然で変形に耐えるかを分けて評価する。
+- Confirm the body asset, references, generation provenance, pose, units, and forward/up/left/right axes. Respect the user's choice of existing bodies or external assets. Do not turn one character's preference against external bodies into a universal ban.
+- Before operating Blender, inspect the connection and scene and save a new version. Preserve existing work and check the current Blender API and enum values before changes.
+- Inspect front, side, and oblique views for head-to-body proportions, shoulder width, torso thickness, pelvis, and the lengths and cross sections of upper arms, forearms, thighs, and lower legs. Preserve anatomical thickness under clothing.
+- When aligning a T-pose, check shoulder, elbow, wrist, hip, knee, and ankle locations as well as horizontal arms. OpenPose landmarks provide placement clues; they do not determine depth or joint axes.
+- Focus smoothing, seam repair, and retopology on regions that need to move. Evaluate mesh closure separately from anatomically plausible, deformation-ready shape.
 
-## 検証
+## Validation
 
-同じカメラ・照明で変更前後を撮り、衣装なしの静止姿勢と小さな肩・肘・膝・足首の曲げを確認する。補助リグが必要ならその範囲で作る。断面の潰れ、逆曲がり、関節の位置ずれ、左右差を記録する。
+Capture before/after images with the same camera and lighting. Check the unclothed neutral pose and small shoulder, elbow, knee, and ankle bends. Create a temporary test rig only as needed. Record collapsed cross sections, inverted bends, displaced joints, and left/right differences.
 
-極端に細い腕、縮めすぎた肩、潰れた関節が出た場合は、素体や参照合わせへ戻す。衣装への接触回避のためにさらに細くしない。許容する体型やスタイルは参照とユーザーの意図に従う。
+If arms become excessively thin, shoulders compressed, or joints collapsed, return to body shape or reference alignment. Do not thin the body further to avoid clothing contact. Follow the reference and user intent when judging acceptable proportions and stylization.
 
-## 出力と完了条件
+## Outputs and completion
 
-基準素体、新旧の比較画像、寸法と座標系、関節候補、変更した形状と未解決箇所を保存する。「生成済み」「静止形状を確認」「関節変形を確認」を別の状態で記録する。
+Save the baseline body, comparison images, measurements and coordinate system, candidate joints, shape changes, and unresolved regions. Track `generated`, `static shape checked`, and `joint deformation checked` as separate states.
 
-体型と関節の位置が参照に沿い、対象の小さな曲げで大きく破綻しない範囲を確認してから衣装合わせへ進む。今回の許容範囲を超える動作まで保証しない。
+Proceed to clothing fitting after proportions and joint placement match the references and the requested small bends show no major failures. State the tested motion range; do not guarantee movements outside it.
